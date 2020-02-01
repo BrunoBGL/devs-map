@@ -1,31 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './App.css';
 
+import api from './services/api';
+
+import DevForm from './components/DevForm/';
+
 function App() {
+  const [devs, setDevs] = useState('');
+
+  const handleAdd = async (data) => {
+    const response = await api.post('/devs', data);
+
+    setDevs([...devs, response.data])
+  };
+
   return (
     <div id="app">
       <aside className="sidebar">
-        <form className="form">
-          <div className="input-block">
-            <label>nome</label>
-            <input></input>
-          </div>
-          <div className="input-block">
-            <label>tecnologias</label>
-            <input></input>
-          </div>
-          <div className="input-group">
-            <div className="input-block">
-              <label>longitude</label>
-              <input></input>
-            </div>
-            <div className="input-block">
-              <label>latitude</label>
-              <input></input>
-            </div>
-          </div>
-          <button>salvar</button>
-        </form>
+        <DevForm onSubmit={handleAdd} />
       </aside>
       <main className="main-container">
         <li className="user-list">
@@ -70,7 +62,7 @@ function App() {
           </ul>
         </li>
       </main>
-    </div>
+    </div >
   );
 }
 
