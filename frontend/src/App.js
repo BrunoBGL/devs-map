@@ -1,12 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 
 import api from './services/api';
 
 import DevForm from './components/DevForm/';
+import DevItem from './components/DevItem';
 
 function App() {
-  const [devs, setDevs] = useState('');
+  const [devs, setDevs] = useState([]);
+
+  useEffect(() => {
+    async function loadDevs() {
+      const response = await api.get('/devs');
+
+      setDevs(response.data);
+    }
+
+    loadDevs();
+  }, []);
 
   const handleAdd = async (data) => {
     const response = await api.post('/devs', data);
@@ -21,45 +32,9 @@ function App() {
       </aside>
       <main className="main-container">
         <li className="user-list">
-          <ul className="card">
-            <img className="avatar" src="https://img.freepik.com/fotos-gratis/gotas-de-oleo-na-imagem-abstrata-padrao-psicodelico-de-agua_23-2148290141.jpg?size=626&ext=jpg" alt="dev" />
-            <div className="user-info">
-              <strong>Nome do Sujeito</strong>
-              <span>Javascript, HTML, CSS </span>
-            </div>
-            <p className="bio"> klsjdkajsdkajsdlans ljndlaksjdkajsdlkajsdklsjdka jsdkajsdlansljndlaksjdkajsdlkajsdklsjdkajsdk  kajsdlansljndlaksjdkajsdlkajsd </p>
-            <a className="link" href="#" value="test">link clickante</a>
-          </ul>
-
-          <ul className="card">
-            <img className="avatar" src="https://img.freepik.com/fotos-gratis/gotas-de-oleo-na-imagem-abstrata-padrao-psicodelico-de-agua_23-2148290141.jpg?size=626&ext=jpg" alt="dev" />
-            <div className="user-info">
-              <strong>Nome do Sujeito</strong>
-              <span>Javascript, HTML, CSS </span>
-            </div>
-            <p className="bio"> klsjdkajsdkajsdlans ljndlaksjdkajsdlkajsdklsjdka jsdkajsdlansljndlaksjdkajsdlkajsdklsjdkajsdk  kajsdlansljndlaksjdkajsdlkajsd </p>
-            <a className="link" href="#" value="test">link clickante</a>
-          </ul>
-
-          <ul className="card">
-            <img className="avatar" src="https://img.freepik.com/fotos-gratis/gotas-de-oleo-na-imagem-abstrata-padrao-psicodelico-de-agua_23-2148290141.jpg?size=626&ext=jpg" alt="dev" />
-            <div className="user-info">
-              <strong>Nome do Sujeito</strong>
-              <span>Javascript, HTML, CSS </span>
-            </div>
-            <p className="bio"> klsjdkajsdkajsdlans ljndlaksjdkajsdlkajsdklsjdka jsdkajsdlansljndlaksjdkajsdlkajsdklsjdkajsdk  kajsdlansljndlaksjdkajsdlkajsd </p>
-            <a className="link" href="#" value="test">link clickante</a>
-          </ul>
-
-          <ul className="card">
-            <img className="avatar" src="https://img.freepik.com/fotos-gratis/gotas-de-oleo-na-imagem-abstrata-padrao-psicodelico-de-agua_23-2148290141.jpg?size=626&ext=jpg" alt="dev" />
-            <div className="user-info">
-              <strong>Nome do Sujeito</strong>
-              <span>Javascript, HTML, CSS </span>
-            </div>
-            <p className="bio"> klsjdkajsdkajsdlans ljndlaksjdkajsdlkajsdklsjdka jsdkajsdlansljndlaksjdkajsdlkajsdklsjdkajsdk  kajsdlansljndlaksjdkajsdlkajsd </p>
-            <a className="link" href="#" value="test">link clickante</a>
-          </ul>
+          {devs.map(dev => (
+            <DevItem dev={dev} />
+          ))}
         </li>
       </main>
     </div >
