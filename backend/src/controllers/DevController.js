@@ -2,6 +2,8 @@ const axios = require('axios');
 
 const Dev = require('../models/Dev');
 const parseStringAsArray = require('../utils/parseStringAsArray');
+const { findConnections } = require('../websocket');
+const { sendMessage } = require('../websocket');
 
 module.exports = {
   destroy() { },
@@ -21,7 +23,7 @@ module.exports = {
 
     if (!dev) {
 
-      const gitHuRes = await axios.get(`https://api.github.com/users/${github_username}`);
+      const gitHubRes = await axios.get(`https://api.github.com/users/${github_username}`);
 
       const location = {
         type: 'Point',
@@ -31,8 +33,7 @@ module.exports = {
         ],
       };
 
-      const { name = login, avatar_url, bio } = gitHuRes.data;
-      console.log(name, avatar_url, bio, github_username, techsArray);
+      const { name = login, avatar_url, bio } = gitHubRes.data;
 
       const dev = await Dev.create({
         name,
@@ -42,6 +43,15 @@ module.exports = {
         techs: techsArray,
         location,
       });
+
+      const sendSocketMessageTo = findConnections(
+        { latitude, longitude },
+        techsArray,
+      );
+
+      console.log(sendSocketMessageTo);
+
+      sendMessage(sendSocketMessageTo, 'new-user', dev);
     }
 
     return res.json(dev);
